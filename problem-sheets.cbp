@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Problem_sheets" />
+		<Option title="problem-sheets" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -32,11 +32,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="helpers.cpp" />
-		<Unit filename="helpers.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="problem1.cpp" />
-		<Unit filename="problem1.h" />
+		<Unit filename="ps1.cpp" />
+		<Unit filename="ps1.h" />
+		<Unit filename="utils.cpp" />
+		<Unit filename="utils.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

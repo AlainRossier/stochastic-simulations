@@ -1,7 +1,7 @@
 #include <numeric>
 #include <functional>
 #include <algorithm>
-#include "helpers.h"
+#include "utils.h"
 
 #include <boost/numeric/ublas/matrix.hpp>
 

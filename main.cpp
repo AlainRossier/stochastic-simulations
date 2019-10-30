@@ -1,13 +1,17 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
-#include "helpers.h"
-#include "problem1.h"
+#include <fstream>
+
+#include "utils.h"
+#include "ps1.h"
 #include <boost/numeric/ublas/io.hpp>
 
 
 using namespace std;
 using namespace boost::numeric::ublas;
+
+std::string ABS_PATH = "/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/";
 
 
 int main()
@@ -66,23 +70,68 @@ int main()
 
 
     // 2.a. Analytical computation
-    // f_bar = -2/pi^2 = -0.20264
-    // sigma^2 = 1/6 - 4/pi^4 + 1/(4*pi^2)
+    double f_bar = -2/pow(M_PI, 2);
+    double std_dev = sqrt(1.0/6 - 4/pow(M_PI, 4) + 1.0/(4*pow(M_PI, 2)));
+    std::function<double(double)> linear_cos_lambda = [=](double x) -> double {return x;};
 
     // 2.b. Monte-Carlo simulations
     size_t inner_sim(1000);
     size_t outer_sim(1000);
     std::vector<double> cdf(outer_sim);
     for (size_t i(0); i < outer_sim; i++) {
-        cdf[i] = empiricalMean(inner_sim, rng);
+        cdf[i] = empiricalMean(inner_sim, linear_cos_lambda, rng);
     }
-    cout << cdf[1] << cdf[2] << cdf[3] << endl;
 
     // 2.c. Sorting and plotting
     std::sort(cdf.begin(), cdf.end());
+    std::ofstream outfile_2c;
+    outfile_2c.open(ABS_PATH + "data/ps_1_2c_empirical_cdf.data");
+    size_t count(0);
+    for (const auto &e : cdf) {
+        outfile_2c << e << " " << (count + 0.5) / outer_sim << " " << norm_cdf(sqrt(outer_sim) * (e-f_bar) / std_dev) << "\n";
+        count++;
+    }
+    outfile_2c.close();
+
 
     // 2.d. Confidence intervals
-    std::vector<size_t> n_sims = {1000, 10000, 100000, 1000000};
+    std::vector<size_t> n_sims(11);
+    n_sims[0] = 1024;
+    for (size_t i(1); i < n_sims.size(); i++) n_sims[i] = 2*n_sims[i-1];
+    confianceIntervals(n_sims, linear_cos_lambda, f_bar, ABS_PATH + "/data/ps_1_2d_confidence_intervals.data", rng);
+
+
+
+    // 3.a. Analytical computation
+    double rate(0.05), sigma(0.2), maturity(1.0), initial_value(100.0), strike(100.0);
+    f_bar = analytical_european_call(rate, sigma, maturity, initial_value, strike, "value");
+    boost::math::normal normal_dist(0.0, 1.0);
+    std::function<double(double)> payoff_european_call_lambda = [&](double x) -> double {
+        return payoff_european_call(x, rate, sigma, maturity, initial_value, strike, normal_dist);
+    };
+
+    // 3.b. Monte-Carlo simulations
+    for (size_t i(0); i < outer_sim; i++) {
+        cdf[i] = empiricalMean(inner_sim, payoff_european_call_lambda, rng);
+    }
+
+    // 3.c. Sorting and plotting
+    std::sort(cdf.begin(), cdf.end());
+    std::ofstream outfile_3c;
+    outfile_3c.open(ABS_PATH + "data/ps_1_3c_empirical_cdf.data");
+    count = 0;
+    for (const auto &e : cdf) {
+        outfile_3c << e << " " << (count + 0.5) / outer_sim << " " << norm_cdf(sqrt(outer_sim) * (e-f_bar) / std_dev) << "\n";
+        count++;
+    }
+    outfile_3c.close();
+
+
+    // 3.d. Confidence intervals
+    confianceIntervals(n_sims, payoff_european_call_lambda, f_bar, ABS_PATH + "/data/ps_1_3d_confidence_intervals.data", rng);
+
+
+
 
 
 
