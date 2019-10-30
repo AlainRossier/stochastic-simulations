@@ -128,7 +128,15 @@ int main()
 
 
     // 3.d. Confidence intervals
-    confianceIntervals(n_sims, payoff_european_call_lambda, f_bar, ABS_PATH + "/data/ps_1_3d_confidence_intervals.data", rng);
+    confianceIntervals(n_sims, payoff_european_call_lambda, f_bar,
+                       ABS_PATH + "/data/ps_1_3d_confidence_intervals.data", rng);
+
+
+    // 4.a. Antithetic variables
+    double corr = antitheticVariables(n_sims, payoff_european_call_lambda,
+                                      ABS_PATH + "/data/ps_1_4a_antithetic_variance.data", rng);
+
+    cout << "Correlation between antithetic variables : " << corr << endl;
 
 
 

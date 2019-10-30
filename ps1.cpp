@@ -151,3 +151,52 @@ double payoff_european_call(double unif, double rate, double sigma, double matur
     double price = initial_value * exp((rate - 0.5*pow(sigma, 2)) * maturity + sigma * sqrt(maturity) * normal);
     return exp(-rate * maturity) * max(price - strike, 0.0);
 }
+
+
+// Problem 4
+
+double antitheticVariables(std::vector<size_t> n_sims, const std::function<double(double)>& f,
+                        string path, std::default_random_engine& rng) {
+    // Initialization
+    size_t n_experiments = n_sims.size();
+    std::vector<double> empirical_variance(n_experiments);
+    std::vector<double> empirical_variance_anti(n_experiments);
+    std::sort(n_sims.begin(), n_sims.end());
+    size_t max_sim = n_sims.back();
+    double sample_plus(0.0), sample_minus(0.0);
+    double sum(0.0), sumsq(0.0), acc(0.0);
+    double sum_anti(0.0), sumsq_anti(0.0), acc_anti(0.0);
+    double corr(0.0);
+    size_t incr(0), k(0);
+
+    // Generation
+    uniform_real_distribution<double> uniform(0.0f, 1.0f);
+    auto next_uniform = bind(ref(uniform), ref(rng));
+    while (incr < max_sim) {
+        double u = next_uniform();
+        sample_plus = f(u), sample_minus = f(1-u);
+        corr += sample_plus * sample_minus;
+        sum += sample_plus; sumsq += pow(sample_plus, 2);
+        sum_anti += 0.5 * (sample_plus + sample_minus);
+        sumsq_anti += pow(0.5 * (sample_plus + sample_minus), 2);
+        incr += 1;
+        if (incr == n_sims[k]) {
+            empirical_variance[k] = (sumsq - incr * pow(sum/incr, 2)) / (incr*(incr-1));
+            empirical_variance_anti[k] = (sumsq_anti - incr * pow(sum_anti/incr, 2)) / (incr*(incr-1));
+            k += 1;
+        }
+    }
+
+    corr = (corr/incr - pow(sum/incr, 2)) / (incr * empirical_variance[k-1]);
+
+    // Saving
+    std::ofstream outfile_ci;
+    outfile_ci.open(path);
+    for (size_t i(0); i < n_experiments; i++) {
+        outfile_ci << n_sims[i] << " " << empirical_variance[i]  << " " << empirical_variance_anti[i] << "\n";
+    }
+    outfile_ci.close();
+
+    return corr;
+}
+

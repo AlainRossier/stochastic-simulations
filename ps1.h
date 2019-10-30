@@ -22,5 +22,9 @@ void confianceIntervals(std::vector<size_t>, const std::function<double(double)>
 double analytical_european_call(double, double, double, double, double, std::string);
 double payoff_european_call(double, double, double, double, double, double, boost::math::normal&);
 
+// Problem 4
+double antitheticVariables(std::vector<size_t>, const std::function<double(double)>&,
+                           std::string path, std::default_random_engine&);
+
 
 #endif
