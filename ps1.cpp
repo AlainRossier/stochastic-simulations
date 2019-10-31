@@ -85,11 +85,10 @@ double norm_cdf(double normal) {
 }
 
 void confianceIntervals(std::vector<size_t> n_sims, const std::function<double(double)>& f, double true_mean,
+                        std::vector<double>& empirical_mean, std::vector<double>& empirical_sd,
                         string path, std::default_random_engine& rng) {
     // Initialization
     size_t n_experiments = n_sims.size();
-    std::vector<double> empirical_mean(n_experiments);
-    std::vector<double> empirical_sd(n_experiments);
     std::sort(n_sims.begin(), n_sims.end());
     size_t max_sim = n_sims.back();
     double sum(0.0), sumsq(0.0), acc(0.0);
@@ -104,7 +103,7 @@ void confianceIntervals(std::vector<size_t> n_sims, const std::function<double(d
         incr += 1;
         if (incr == n_sims[k]) {
             empirical_mean[k] = sum / incr;
-            empirical_sd[k] = sqrt((sumsq - incr * pow(empirical_mean[k], 2)) / (incr-1));
+            empirical_sd[k] = sqrt((sumsq - incr * pow(empirical_mean[k], 2)) / (incr*(incr-1)));
             k += 1;
         }
     }
@@ -116,7 +115,7 @@ void confianceIntervals(std::vector<size_t> n_sims, const std::function<double(d
         double n = n_sims[i];
         double m = empirical_mean[i];
         double sd = empirical_sd[i];
-        outfile_ci << n << " " << m << " " << m-3*sd/sqrt(n) << " " << m+3*sd/sqrt(n) << " " << true_mean << "\n";
+        outfile_ci << n << " " << m << " " << m-3*sd << " " << m+3*sd << " " << true_mean << "\n";
     }
     outfile_ci.close();
 }
@@ -164,8 +163,8 @@ double antitheticVariables(std::vector<size_t> n_sims, const std::function<doubl
     std::sort(n_sims.begin(), n_sims.end());
     size_t max_sim = n_sims.back();
     double sample_plus(0.0), sample_minus(0.0);
-    double sum(0.0), sumsq(0.0), acc(0.0);
-    double sum_anti(0.0), sumsq_anti(0.0), acc_anti(0.0);
+    double sum(0.0), sumsq(0.0);
+    double sum_anti(0.0), sumsq_anti(0.0);
     double corr(0.0);
     size_t incr(0), k(0);
 
@@ -198,5 +197,72 @@ double antitheticVariables(std::vector<size_t> n_sims, const std::function<doubl
     outfile_ci.close();
 
     return corr;
+}
+
+
+double controlVariate(std::vector<size_t> n_sims, const std::function<double(double)>& f,
+                      const std::function<double(double)>& g, double true_mean_g,
+                      string path, std::default_random_engine& rng) {
+    // Initialization
+    size_t n_experiments = n_sims.size();
+    std::vector<double> empirical_variance(n_experiments);
+    std::vector<double> empirical_variance_control(n_experiments);
+    std::sort(n_sims.begin(), n_sims.end());
+    size_t max_sim = n_sims.back();
+    double sample_f(0.0), sample_g(0.0);
+    double sum_f(0.0), sumsq_f(0.0), var_f(0.0);
+    double sum_g(0.0), sumsq_g(0.0), var_g(0.0);
+    double sum_control(0.0), sumsq_control(0.0), acc_control(0.0);
+    double covar(0.0), corr(0.0), lambda(1.0);
+    size_t incr(0), k(0);
+
+    // Generation
+    uniform_real_distribution<double> uniform(0.0f, 1.0f);
+    auto next_uniform = bind(ref(uniform), ref(rng));
+    while (incr < max_sim) {
+        double u = next_uniform();
+        sample_f = f(u), sample_g = g(u);
+        sum_f += sample_f; sumsq_f += pow(sample_f, 2);
+        sum_g += sample_g; sumsq_g += pow(sample_g, 2);
+        acc_control = sample_f - lambda*(sample_g - true_mean_g);
+        sum_control += acc_control; sumsq_control += pow(acc_control, 2);
+        incr += 1;
+
+        // Update the lambda for the first 1000 iterations
+        if (incr <= 1000) {
+            covar += sample_f * sample_g;
+            if (incr >= 10) {
+                var_f = (sumsq_f - incr * pow(sum_f/incr, 2)) / (incr-1);
+                var_g = (sumsq_g - incr * pow(sum_g/incr, 2)) / (incr-1);
+                lambda = (covar/incr - sum_f/incr * sum_g/incr) / var_g;
+                corr = lambda * sqrt(var_g/var_f);
+            }
+        }
+        if (incr == n_sims[k]) {
+            empirical_variance[k] = (sumsq_f - incr * pow(sum_f/incr, 2)) / (incr*(incr-1));
+            empirical_variance_control[k] = (sumsq_control - incr * pow(sum_control/incr, 2)) / (incr*(incr-1));
+            k += 1;
+        }
+    }
+
+    // Saving
+    std::ofstream outfile_ci;
+    outfile_ci.open(path);
+    for (size_t i(0); i < n_experiments; i++) {
+        outfile_ci << n_sims[i] << " " << empirical_variance[i]  << " " << empirical_variance_control[i] << "\n";
+    }
+    outfile_ci.close();
+
+    return corr;
+}
+
+
+// Problem 5
+
+double payoff_digital_put(double unif, double rate, double sigma, double maturity,
+                          double initial_value, double strike, boost::math::normal& dist) {
+    double normal = quantile(dist, unif);
+    double price = initial_value * exp((rate - 0.5*pow(sigma, 2)) * maturity + sigma * sqrt(maturity) * normal);
+    return exp(-rate * maturity) * (strike - price > 0.0);
 }
 

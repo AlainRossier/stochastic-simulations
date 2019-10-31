@@ -95,10 +95,15 @@ int main()
 
 
     // 2.d. Confidence intervals
-    std::vector<size_t> n_sims(11);
+    size_t n_experiments(11);
+    std::vector<size_t> n_sims(n_experiments);
+    std::vector<double> empirical_mean_2d(n_experiments);
+    std::vector<double> empirical_sd_2d(n_experiments);
     n_sims[0] = 1024;
     for (size_t i(1); i < n_sims.size(); i++) n_sims[i] = 2*n_sims[i-1];
-    confianceIntervals(n_sims, linear_cos_lambda, f_bar, ABS_PATH + "/data/ps_1_2d_confidence_intervals.data", rng);
+    confianceIntervals(n_sims, linear_cos_lambda, f_bar,
+                       empirical_mean_2d, empirical_sd_2d,
+                       ABS_PATH + "/data/ps_1_2d_confidence_intervals.data", rng);
 
 
 
@@ -128,15 +133,50 @@ int main()
 
 
     // 3.d. Confidence intervals
+    std::vector<double> empirical_mean_3d(n_experiments);
+    std::vector<double> empirical_sd_3d(n_experiments);
     confianceIntervals(n_sims, payoff_european_call_lambda, f_bar,
+                       empirical_mean_3d, empirical_sd_3d,
                        ABS_PATH + "/data/ps_1_3d_confidence_intervals.data", rng);
 
 
     // 4.a. Antithetic variables
-    double corr = antitheticVariables(n_sims, payoff_european_call_lambda,
-                                      ABS_PATH + "/data/ps_1_4a_antithetic_variance.data", rng);
+    double corr_anti = antitheticVariables(n_sims, payoff_european_call_lambda,
+                                           ABS_PATH + "/data/ps_1_4a_antithetic_variance.data", rng);
 
-    cout << "Correlation between antithetic variables : " << corr << endl;
+    cout << "Correlation between antithetic variables : " << corr_anti << endl;
+
+    // 4.b. Control variate
+    std::function<double(double)> control_variate_lambda = [&](double x) -> double {
+        return payoff_european_call(x, rate, sigma, maturity, initial_value, 0, normal_dist);
+    };
+
+    double corr_control = controlVariate(n_sims, payoff_european_call_lambda,
+                                         control_variate_lambda, initial_value,
+                                         ABS_PATH + "/data/ps_1_4b_control_variate.data", rng);
+
+    cout << "Correlation between control variates : " << corr_control << "\n" << endl;
+
+
+    // 5.a. Digital put option
+    rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 50.0;
+    std::function<double(double)> payoff_digital_put_lambda = [&](double x) -> double {
+        return payoff_digital_put(x, rate, sigma, maturity, initial_value, strike, normal_dist);
+    };
+
+    std::vector<double> empirical_mean_5a(n_experiments);
+    std::vector<double> empirical_sd_5a(n_experiments);
+
+    confianceIntervals(n_sims, payoff_digital_put_lambda, DBL_MAX,
+                       empirical_mean_5a, empirical_sd_5a,
+                       ABS_PATH + "/data/ps_1_5a_digital_put_value.data", rng);
+
+    for (size_t i(0); i < n_experiments; i++) {
+        cout << "With " << n_sims[i] << " samples, the value is correct within ";
+        cout << 100*(empirical_sd_5a[i] / max(abs(empirical_mean_5a[i]), pow(10, -30))) << "%." << endl;
+    }
+
+    // 5.b. With importance sampling
 
 
 
