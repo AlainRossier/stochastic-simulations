@@ -38,6 +38,7 @@ void populate(std::vector<double>& samples, string method, default_random_engine
 matrix<double> cholesky(matrix<double> input) {
     if (input.size1() != input.size2() || input.size1() == 0) {
         cerr << "The input matrix is not square." << endl;
+        return matrix<double>(0, 0);
     }
     else {
         size_t dim = input.size1();
@@ -144,9 +145,8 @@ double analytical_european_call(double rate, double sigma, double maturity, doub
 }
 
 
-double payoff_european_call(double unif, double rate, double sigma, double maturity,
-                            double initial_value, double strike, boost::math::normal& dist) {
-    double normal = quantile(dist, unif);
+double payoff_european_call(double normal, double rate, double sigma, double maturity,
+                            double initial_value, double strike) {
     double price = initial_value * exp((rate - 0.5*pow(sigma, 2)) * maturity + sigma * sqrt(maturity) * normal);
     return exp(-rate * maturity) * max(price - strike, 0.0);
 }
@@ -219,8 +219,9 @@ double controlVariate(std::vector<size_t> n_sims, const std::function<double(dou
     // Generation
     uniform_real_distribution<double> uniform(0.0f, 1.0f);
     auto next_uniform = bind(ref(uniform), ref(rng));
+    double u(0.0);
     while (incr < max_sim) {
-        double u = next_uniform();
+        u = next_uniform();
         sample_f = f(u), sample_g = g(u);
         sum_f += sample_f; sumsq_f += pow(sample_f, 2);
         sum_g += sample_g; sumsq_g += pow(sample_g, 2);
@@ -259,10 +260,56 @@ double controlVariate(std::vector<size_t> n_sims, const std::function<double(dou
 
 // Problem 5
 
-double payoff_digital_put(double unif, double rate, double sigma, double maturity,
-                          double initial_value, double strike, boost::math::normal& dist) {
-    double normal = quantile(dist, unif);
+double payoff_digital_put(double normal, double rate, double sigma, double maturity,
+                          double initial_value, double strike) {
     double price = initial_value * exp((rate - 0.5*pow(sigma, 2)) * maturity + sigma * sqrt(maturity) * normal);
     return exp(-rate * maturity) * (strike - price > 0.0);
+}
+
+
+// Problem 6
+void finite_difference_bumping(std::vector<double> bumps, size_t n_sim, const std::function<double(double, double)>& f,
+                               double true_sensi, std::string path, std::default_random_engine& rng) {
+
+     // Initialization
+    size_t n_experiments = bumps.size();
+    std::vector<double> sum_sensi_same_random(n_experiments);
+    std::vector<double> sum_sensi_diff_random(n_experiments);
+    std::vector<double> sumsq_sensi_same_random(n_experiments);
+    std::vector<double> sumsq_sensi_diff_random(n_experiments);
+    std::sort(bumps.begin(), bumps.end());
+    double acc_same_random(0.0), acc_diff_random(0.0);
+
+    // Generation
+    uniform_real_distribution<double> uniform(0.0f, 1.0f);
+    auto next_uniform = bind(ref(uniform), ref(rng));
+    double u(0.0), v(0.0);
+    for (size_t i(0); i < n_sim; i++) {
+        u = next_uniform(); v = next_uniform();
+        for (size_t k(0); k < n_experiments; k++) {
+            acc_same_random = (f(u, bumps[k]) - f(u, -bumps[k])) / (2*bumps[k]);
+            acc_diff_random = (f(u, bumps[k]) - f(v, -bumps[k])) / (2*bumps[k]);
+            sum_sensi_same_random[k] += acc_same_random;
+            sum_sensi_diff_random[k] += acc_diff_random;
+            sumsq_sensi_same_random[k] += pow(acc_same_random, 2);
+            sumsq_sensi_diff_random[k] += pow(acc_diff_random, 2);
+        }
+    }
+
+    // Saving
+    std::ofstream outfile_fd;
+    outfile_fd.open(path);
+    double mean_same(0.0), std_same(0.0), mean_diff(0.0), std_diff(0.0);
+    for (size_t k(0); k < n_experiments; k++) {
+        mean_same = sum_sensi_same_random[k]/n_sim;
+        std_same = sqrt((sumsq_sensi_same_random[k] - n_sim * pow(mean_same, 2)) / (n_sim*(n_sim-1)));
+        mean_diff = sum_sensi_diff_random[k]/n_sim;
+        std_diff = sqrt((sumsq_sensi_diff_random[k] - n_sim * pow(mean_diff, 2)) / (n_sim*(n_sim-1)));
+
+        outfile_fd << bumps[k] << " " << mean_same << " " << mean_same-3*std_same << " " << mean_same+3*std_same << " ";
+        outfile_fd << mean_diff << " " << mean_diff-3*std_diff << " " << mean_diff+3*std_diff << " ";
+        outfile_fd << true_sensi << "\n";
+    }
+    outfile_fd.close();
 }
 

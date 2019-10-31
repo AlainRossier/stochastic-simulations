@@ -112,7 +112,7 @@ int main()
     f_bar = analytical_european_call(rate, sigma, maturity, initial_value, strike, "value");
     boost::math::normal normal_dist(0.0, 1.0);
     std::function<double(double)> payoff_european_call_lambda = [&](double x) -> double {
-        return payoff_european_call(x, rate, sigma, maturity, initial_value, strike, normal_dist);
+        return payoff_european_call(quantile(normal_dist, x), rate, sigma, maturity, initial_value, strike);
     };
 
     // 3.b. Monte-Carlo simulations
@@ -148,7 +148,7 @@ int main()
 
     // 4.b. Control variate
     std::function<double(double)> control_variate_lambda = [&](double x) -> double {
-        return payoff_european_call(x, rate, sigma, maturity, initial_value, 0, normal_dist);
+        return payoff_european_call(quantile(normal_dist, x), rate, sigma, maturity, initial_value, 0);
     };
 
     double corr_control = controlVariate(n_sims, payoff_european_call_lambda,
@@ -161,7 +161,7 @@ int main()
     // 5.a. Digital put option
     rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 50.0;
     std::function<double(double)> payoff_digital_put_lambda = [&](double x) -> double {
-        return payoff_digital_put(x, rate, sigma, maturity, initial_value, strike, normal_dist);
+        return payoff_digital_put(quantile(normal_dist, x), rate, sigma, maturity, initial_value, strike);
     };
 
     std::vector<double> empirical_mean_5a(n_experiments);
@@ -171,12 +171,70 @@ int main()
                        empirical_mean_5a, empirical_sd_5a,
                        ABS_PATH + "/data/ps_1_5a_digital_put_value.data", rng);
 
+    cout << "Without importance sampling" << endl;
     for (size_t i(0); i < n_experiments; i++) {
-        cout << "With " << n_sims[i] << " samples, the value is correct within ";
+        cout << "With " << n_sims[i] << " samples, the value is " << empirical_mean_5a[i] << " and is correct within ";
         cout << 100*(empirical_sd_5a[i] / max(abs(empirical_mean_5a[i]), pow(10, -30))) << "%." << endl;
     }
 
+
     // 5.b. With importance sampling
+    // We have p_1(x) = 1/sqrt(2*pi) * exp(-1/2*x^2), f(x) = exp(-rT) * H(K - S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*x))
+    // We let p_2(x) = 1/sqrt(2*pi) * exp(-1/2*(x+mu)^2), so that R(x) = exp(-mu*x-1/2*mu^2)
+    // We want to pick mu s.t. K = S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*mu)
+
+    double mu = (log(strike / initial_value) - (rate - 0.5*pow(sigma, 2))*maturity) / (sigma*sqrt(maturity));
+
+    std::function<double(double)> payoff_digital_put_is_lambda = [&](double x) -> double {
+        double normal = quantile(normal_dist, x);
+        return payoff_digital_put(mu + normal, rate, sigma, maturity, initial_value, strike) * \
+               exp(-mu*normal - 0.5*pow(mu, 2));
+    };
+
+    std::vector<double> empirical_mean_5b(n_experiments);
+    std::vector<double> empirical_sd_5b(n_experiments);
+    confianceIntervals(n_sims, payoff_digital_put_is_lambda, DBL_MAX,
+                       empirical_mean_5b, empirical_sd_5b,
+                       ABS_PATH + "/data/ps_1_5b_digital_put_value_importance_sampling.data", rng);
+
+    cout << "With importance sampling" << endl;
+    for (size_t i(0); i < n_experiments; i++) {
+        cout << "With " << n_sims[i] << " samples, the value is " << empirical_mean_5b[i] <<  " and is correct within ";
+        cout << 100*(empirical_sd_5b[i] / max(abs(empirical_mean_5b[i]), pow(10, -30))) << "%." << endl;
+    }
+
+
+    // 6.a. Bumping
+    rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 100.0;
+    std::function<double(double, double)> delta_european_call_lambda = [&](double x, double bump) -> double {
+        return payoff_european_call(quantile(normal_dist, x), rate, sigma, maturity, initial_value*exp(bump), strike) / initial_value;
+    };
+    std::function<double(double, double)> vega_european_call_lambda = [&](double x, double bump) -> double {
+        return payoff_european_call(quantile(normal_dist, x), rate, sigma*exp(bump), maturity, initial_value, strike) / sigma;
+    };
+
+    std::vector<double> bumps(n_experiments);
+    for (int i(0); i < n_experiments; i++) {bumps[i] = pow(2, -i);}
+
+    finite_difference_bumping(bumps, 1000000, delta_european_call_lambda,
+                              analytical_european_call(rate, sigma, maturity, initial_value, strike, "delta"),
+                              ABS_PATH + "/data/ps_1_6a_bumping_delta_european_call.data", rng);
+
+    finite_difference_bumping(bumps, 1000000, vega_european_call_lambda,
+                              analytical_european_call(rate, sigma, maturity, initial_value, strike, "vega"),
+                              ABS_PATH + "/data/ps_1_6a_bumping_vega_european_call.data", rng);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

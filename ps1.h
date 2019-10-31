@@ -21,17 +21,21 @@ void confianceIntervals(std::vector<size_t>, const std::function<double(double)>
 
 // Problem 3
 double analytical_european_call(double, double, double, double, double, std::string);
-double payoff_european_call(double, double, double, double, double, double, boost::math::normal&);
+double payoff_european_call(double, double, double, double, double, double);
 
 // Problem 4
 double antitheticVariables(std::vector<size_t>, const std::function<double(double)>&,
-                           std::string path, std::default_random_engine&);
+                           std::string, std::default_random_engine&);
 double controlVariate(std::vector<size_t>, const std::function<double(double)>&,
                       const std::function<double(double)>&, double,
                       std::string, std::default_random_engine&);
 
 // Problem 5
-double payoff_digital_put(double, double, double, double, double, double, boost::math::normal&);
+double payoff_digital_put(double, double, double, double, double, double);
+
+// Problem 6
+void finite_difference_bumping(std::vector<double>, size_t, const std::function<double(double, double)>&,
+                               double, std::string, std::default_random_engine&);
 
 
 #endif

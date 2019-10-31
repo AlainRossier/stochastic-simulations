@@ -10,7 +10,7 @@
 	<vector>
 	<boost/numeric/ublas/matrix.hpp>
 
-1572513115 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/main.cpp
+1572543665 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/main.cpp
 	<iostream>
 	<algorithm>
 	<random>
@@ -46,13 +46,13 @@
 	<vector>
 	<boost/numeric/ublas/matrix.hpp>
 
-1572512554 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps1.h
+1572541451 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps1.h
 	<string>
 	<random>
 	<boost/numeric/ublas/matrix.hpp>
 	<boost/math/distributions/normal.hpp>
 
-1572513197 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps1.cpp
+1572544260 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps1.cpp
 	<iostream>
 	<random>
 	<functional>

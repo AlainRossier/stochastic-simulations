@@ -28,6 +28,14 @@ Solutions in C++ of the problem sheets of the Stochastic Simulations lecture by 
 `set logscale x`  
 `plot "ps_1_4b_control_variate.data" using 1:2 with lines title "Variance estimate for European call option value",`  
 `"ps_1_4b_control_variate.data" using 1:3 with lines title "With control variate"`  
-- Exercise 5.a.
-`set logscale x`
+- Exercise 5.a.  
+`set logscale x`  
 `plot "ps_1_5a_digital_put_value.data" using 1:2:3:4 with yerrorlines title "Confidence intervals for digital put option value"`
+- Exercise 5.b.
+`set logscale x`
+`plot "ps_1_5b_digital_put_value_importance_sampling.data" using 1:2:3:4 with yerrorlines title "Confidence intervals for digital put option value with importance sampling"`
+- Exercise 6.a.  
+`set logscale x`
+
+
+
