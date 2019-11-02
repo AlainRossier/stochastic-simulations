@@ -49,7 +49,8 @@ int main()
     // 1.b. Cholesky decomposition
     matrix<double> A(2, 2);
     A(0, 0) = 4; A(0, 1) = 1; A(1, 0) = 1; A(1, 1) = 4;
-    matrix<double> L = cholesky(A);
+    matrix<double> Lchol = cholesky(A);
+    cout << "Cholesky" << Lchol << endl;
 
     std::vector<double> sample_normal_coor(2*n_sim);
     populate(sample_normal_coor, "normal", rng);
@@ -57,14 +58,20 @@ int main()
     unbounded_array<double> storage(2*n_sim);
     std::copy(sample_normal_coor.begin(), sample_normal_coor.end(), storage.begin());
     matrix<double> multivariate_normal(n_sim, 2, storage);
-    matrix<double> corr_multivariate_normal = prod(multivariate_normal, trans(L));
+    matrix<double> corr_multivariate_normal_chol = prod(multivariate_normal, trans(Lchol));
 
-    cout << "Empirical mean of the multivariate normal distribution : " << mean(corr_multivariate_normal) << endl ;
-    cout << "Empirical covariance of the multivariate normal distribution : " << covariance(corr_multivariate_normal) << "\n" << endl ;
+    cout << "Empirical mean of the multivariate normal distribution : " << mean(corr_multivariate_normal_chol) << endl ;
+    cout << "Empirical covariance of the multivariate normal distribution : " << covariance(corr_multivariate_normal_chol) << "\n" << endl ;
 
 
     // 1.c. PCA factorization
+    matrix<double> Lpca = pca2d(A);
+    cout << "PCA " << Lpca << endl;
 
+    matrix<double> corr_multivariate_normal_pca = prod(multivariate_normal, trans(Lpca));
+
+    cout << "Empirical mean of the multivariate normal distribution : " << mean(corr_multivariate_normal_pca) << endl ;
+    cout << "Empirical covariance of the multivariate normal distribution : " << covariance(corr_multivariate_normal_pca) << "\n" << endl ;
 
     // 1.d
 
@@ -206,23 +213,60 @@ int main()
 
     // 6.a. Bumping
     rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 100.0;
-    std::function<double(double, double)> delta_european_call_lambda = [&](double x, double bump) -> double {
+    std::function<double(double, double)> delta_european_call_bump = [&](double x, double bump) -> double {
         return payoff_european_call(quantile(normal_dist, x), rate, sigma, maturity, initial_value*exp(bump), strike) / initial_value;
     };
-    std::function<double(double, double)> vega_european_call_lambda = [&](double x, double bump) -> double {
+    std::function<double(double, double)> vega_european_call_bump = [&](double x, double bump) -> double {
         return payoff_european_call(quantile(normal_dist, x), rate, sigma*exp(bump), maturity, initial_value, strike) / sigma;
     };
 
     std::vector<double> bumps(n_experiments);
     for (int i(0); i < n_experiments; i++) {bumps[i] = pow(2, -i);}
 
-    finite_difference_bumping(bumps, 1000000, delta_european_call_lambda,
-                              analytical_european_call(rate, sigma, maturity, initial_value, strike, "delta"),
+    double true_delta = analytical_european_call(rate, sigma, maturity, initial_value, strike, "delta");
+    double true_vega = analytical_european_call(rate, sigma, maturity, initial_value, strike, "vega");
+
+    finite_difference_bumping(bumps, 100000, delta_european_call_bump, true_delta,
                               ABS_PATH + "/data/ps_1_6a_bumping_delta_european_call.data", rng);
 
-    finite_difference_bumping(bumps, 1000000, vega_european_call_lambda,
-                              analytical_european_call(rate, sigma, maturity, initial_value, strike, "vega"),
+    finite_difference_bumping(bumps, 100000, vega_european_call_bump, true_vega,
                               ABS_PATH + "/data/ps_1_6a_bumping_vega_european_call.data", rng);
+
+
+    // 6.b. Pathwise sensitivity method
+    // For the delta, we have f(S0, Z) = exp(-rT) * max(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) - K, 0)
+    // so that del(f)/del(S0) = exp(-rT) * exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) > K)
+
+    std::function<double(double)> delta_european_call_ipa = [&](double x) -> double {
+        double normal = quantile(normal_dist, x);
+        double price = initial_value * exp((rate - 0.5*pow(sigma, 2)) * maturity + sigma * sqrt(maturity) * normal);
+        return exp(-rate * maturity) * price / initial_value * (price > strike);
+    };
+
+    std::vector<double> empirical_mean_6b_delta(n_experiments);
+    std::vector<double> empirical_sd_6b_delta(n_experiments);
+
+    confianceIntervals(n_sims, delta_european_call_ipa, true_delta,
+                       empirical_mean_6b_delta, empirical_sd_6b_delta,
+                       ABS_PATH + "/data/ps_1_6b_ipa_delta_european_call.data", rng);
+
+    // For the vega, we have del(f)/del(sigma) = exp(-rT) * S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) * \
+    //                                           (-sigma*T + sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*Z) > K)
+
+    std::function<double(double)> vega_european_call_ipa = [&](double x) -> double {
+        double normal = quantile(normal_dist, x);
+        double price = initial_value * exp((rate - 0.5*pow(sigma, 2)) * maturity + sigma * sqrt(maturity) * normal);
+        return exp(-rate * maturity) * price * (-sigma * maturity + sqrt(maturity) * normal) * (price > strike);
+    };
+
+    std::vector<double> empirical_mean_6b_vega(n_experiments);
+    std::vector<double> empirical_sd_6b_vega(n_experiments);
+
+    confianceIntervals(n_sims, vega_european_call_ipa, true_vega,
+                       empirical_mean_6b_vega, empirical_sd_6b_vega,
+                       ABS_PATH + "/data/ps_1_6b_ipa_vega_european_call.data", rng);
+
+
 
 
 

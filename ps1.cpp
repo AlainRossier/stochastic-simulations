@@ -42,7 +42,7 @@ matrix<double> cholesky(matrix<double> input) {
     }
     else {
         size_t dim = input.size1();
-        matrix<double> output(dim, dim, 0);
+        matrix<double> output(dim, dim, 0.0);
         output(0, 0) = sqrt(input(0, 0));
         for (size_t j(1); j < dim; j++) {
             output(j, 0) = input(j, 0) / output(0, 0);
@@ -57,6 +57,44 @@ matrix<double> cholesky(matrix<double> input) {
                 output(j, i) = (input(j, i) - acc) / output(i, i);
             }
         }
+        return output;
+    }
+}
+
+
+matrix<double> pca2d(matrix<double> input) {
+    if (input.size1() != 2 || input.size2() != 2) {
+        cerr << "The input is not a 2x2 square matrix." << endl;
+        return matrix<double>(0, 0);
+    }
+    else if (input(0, 1) != input(1, 0) || input(0,0)*input(1,1) - input(0, 1)*input(1, 0) < 0) {
+        cerr << "The input is not symmetric positive definite." << endl;
+        return matrix<double>(0, 0);
+    }
+    else if (input(1, 0) == 0) {
+        matrix<double> output(2, 2, 0.0);
+        output(0, 0) = sqrt(input(0, 0));
+        output(1, 1) = sqrt(input(1, 1));
+        return output;
+    }
+    else {
+        double c = input(1, 0);
+        double trace = input(0, 0) + input(1, 1);
+        double delta = sqrt(pow(input(0, 0) - input(1, 1), 2) + 4*pow(c, 2));
+        double l0 = (trace + delta) / 2;
+        double l1 = (trace - delta) / 2;
+        double v00 = abs(c) / sqrt(pow(l0-input(0, 0), 2) + pow(c, 2));
+        double v01 = (l0 - input(0, 0)) * v00 / c;
+        double v10 = abs(c) / sqrt(pow(l1-input(0, 0), 2) + pow(c, 2));
+        double v11 = (l1 - input(0, 0)) * v10 / c;
+
+        matrix<double> output(2, 2, 0.0);
+
+        output(0, 0) = sqrt(l0) * v00;
+        output(1, 0) = sqrt(l0) * v01;
+        output(0, 1) = sqrt(l1) * v10;
+        output(1, 1) = sqrt(l1) * v11;
+
         return output;
     }
 }

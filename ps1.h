@@ -10,6 +10,8 @@
 // Problem 1
 void populate(std::vector<double>&, std::string, std::default_random_engine &);
 boost::numeric::ublas::matrix<double> cholesky(boost::numeric::ublas::matrix<double>);
+boost::numeric::ublas::matrix<double> pca2d(boost::numeric::ublas::matrix<double>);
+
 
 // Problem 2
 double linear_cos(double);
