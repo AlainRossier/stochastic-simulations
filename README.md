@@ -1,7 +1,9 @@
-# stochastic-simulations
-Solutions in C++ of the problem sheets of the Stochastic Simulations lecture by Prof. Mike Giles for the CDT of Random Systems 2019.
+# Stochastic Simulation
+Solutions in C++ of the problem sheets of the Stochastic Simulation lecture by Prof. Mike Giles for the CDT of Mathematics of Random Systems, Michaelmas 2019.
 
 ## Installation and set-up
+
+### 
 
 ## Problem sheet 1
 
