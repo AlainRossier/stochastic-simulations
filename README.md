@@ -3,7 +3,18 @@ Solutions in C++ of the problem sheets of the Stochastic Simulation lecture by P
 
 ## Installation and set-up
 
-### 
+### Requirements
+You will need 
+- C++ compiler (I use the GNU GCC Compiler built inside the IDE Code::Blocks),
+- gnuplot to plot the figure using the commands below.
+
+### Execute the program
+The exectuable file is in `./bin/Debug/Problem_sheets`  
+Execute `./Problem_sheets` to write the solutions to the problem sheets.  
+
+### Solutions and plots
+You can find the solutions in text files under `./sols/`, together with the plots.
+
 
 ## Problem sheet 1
 
