@@ -210,6 +210,7 @@ void solutions_ps1() {
                                            ABS_PATH + "/data/ps_1_4a_antithetic_variance.data", rng);
 
     out << "Correlation between antithetic variables : " << corr_anti << endl;
+    out << "Expected factor of variance reduction : " << 2/(1 + corr_anti) << endl;
 
     // 4.b. Control variate
     out << "\n\n4.b. Control variate" << endl;
@@ -222,9 +223,11 @@ void solutions_ps1() {
                                          ABS_PATH + "/data/ps_1_4b_control_variate.data", rng);
 
     out << "Correlation between control variates : " << corr_control << endl;
+    out << "Expected factor of variance reduction : " << 1/(1 - pow(corr_control, 2))  << endl;
 
 
     // 5.a. Digital put option
+    out << "\n\n5.a. Digital put option" << endl;
     rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 50.0;
     std::function<double(double)> payoff_digital_put_lambda = [&](double x) -> double {
         return payoff_digital_put(quantile(normal_dist, x), rate, sigma, maturity, initial_value, strike);
@@ -237,17 +240,20 @@ void solutions_ps1() {
                        empirical_mean_5a, empirical_sd_5a,
                        ABS_PATH + "/data/ps_1_5a_digital_put_value.data", rng);
 
-    cout << "Without importance sampling" << endl;
+    out << "Without importance sampling" << endl;
     for (size_t i(0); i < n_experiments; i++) {
-        cout << "With " << n_sims[i] << " samples, the value is " << empirical_mean_5a[i] << " and is correct within ";
-        cout << 100*(empirical_sd_5a[i] / max(abs(empirical_mean_5a[i]), pow(10, -30))) << "%." << endl;
+        if (i >= 6) {
+            out << "With " << n_sims[i] << " samples, the value is " << empirical_mean_5a[i] << " and is correct within ";
+            out << 100*(empirical_sd_5a[i] / max(abs(empirical_mean_5a[i]), pow(10, -30))) << "%." << endl;
+        }
     }
 
 
     // 5.b. With importance sampling
-    // We have p_1(x) = 1/sqrt(2*pi) * exp(-1/2*x^2), f(x) = exp(-rT) * H(K - S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*x))
-    // We let p_2(x) = 1/sqrt(2*pi) * exp(-1/2*(x+mu)^2), so that R(x) = exp(-mu*x-1/2*mu^2)
-    // We want to pick mu s.t. K = S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*mu)
+    out << "\n5.b. With importance sampling" << endl;
+    out << "We have p_1(x) = 1/sqrt(2*pi) * exp(-1/2*x^2), f(x) = exp(-rT) * H(K - S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*x))" << endl;
+    out << "We let p_2(x) = 1/sqrt(2*pi) * exp(-1/2*(x+mu)^2), so that R(x) = exp(-mu*x-1/2*mu^2)" << endl;
+    out << "We want to pick mu s.t. K = S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*mu)" << endl;
 
     double mu = (log(strike / initial_value) - (rate - 0.5*pow(sigma, 2))*maturity) / (sigma*sqrt(maturity));
 
@@ -263,14 +269,17 @@ void solutions_ps1() {
                        empirical_mean_5b, empirical_sd_5b,
                        ABS_PATH + "/data/ps_1_5b_digital_put_value_importance_sampling.data", rng);
 
-    cout << "With importance sampling" << endl;
+    out << "With importance sampling" << endl;
     for (size_t i(0); i < n_experiments; i++) {
-        cout << "With " << n_sims[i] << " samples, the value is " << empirical_mean_5b[i] <<  " and is correct within ";
-        cout << 100*(empirical_sd_5b[i] / max(abs(empirical_mean_5b[i]), pow(10, -30))) << "%." << endl;
+        if (i < 3) {
+            out << "With " << n_sims[i] << " samples, the value is " << empirical_mean_5b[i] <<  " and is correct within ";
+            out << 100*(empirical_sd_5b[i] / max(abs(empirical_mean_5b[i]), pow(10, -30))) << "%." << endl;
+        }
     }
 
 
     // 6.a. Bumping
+    out << "\n\n6.a. Bumping" << endl;
     rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 100.0;
     std::function<double(double, double)> delta_european_call_bump = [&](double x, double bump) -> double {
         return payoff_european_call(quantile(normal_dist, x), rate, sigma, maturity, initial_value*exp(bump), strike) / initial_value;
@@ -293,8 +302,9 @@ void solutions_ps1() {
 
 
     // 6.b. Pathwise sensitivity method
-    // For the delta, we have f(S0, Z) = exp(-rT) * max(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) - K, 0)
-    // so that del(f)/del(S0) = exp(-rT) * exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) > K)
+    out << "\n6.b. Pathwise sensitivity method" << endl;
+    out << "For the delta, we have f(S0, Z) = exp(-rT) * max(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) - K, 0)" << endl;
+    out << "so that del(f)/del(S0) = exp(-rT) * exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) > K)" << endl;
 
     std::function<double(double)> delta_european_call_ipa = [&](double x) -> double {
         double normal = quantile(normal_dist, x);
@@ -309,8 +319,8 @@ void solutions_ps1() {
                        empirical_mean_6b_delta, empirical_sd_6b_delta,
                        ABS_PATH + "/data/ps_1_6b_ipa_delta_european_call.data", rng);
 
-    // For the vega, we have del(f)/del(sigma) = exp(-rT) * S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) * \
-    //                                           (-sigma*T + sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*Z) > K)
+    out << "\nFor the vega, we have del(f)/del(sigma) = exp(-rT) * S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) *" << endl;
+    out << "(-sigma*T + sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*Z) > K)" << endl;
 
     std::function<double(double)> vega_european_call_ipa = [&](double x) -> double {
         double normal = quantile(normal_dist, x);
@@ -324,7 +334,6 @@ void solutions_ps1() {
     confianceIntervals(n_sims, vega_european_call_ipa, true_vega,
                        empirical_mean_6b_vega, empirical_sd_6b_vega,
                        ABS_PATH + "/data/ps_1_6b_ipa_vega_european_call.data", rng);
-
 
     out.close();
 

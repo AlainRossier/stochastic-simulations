@@ -1,5 +1,5 @@
 1.a. Random variable generation
-CPU time elapsed to generate 1000000 doubles : 132.07200 ms.
+CPU time elapsed to generate 1000000 doubles : 126.99900 ms.
 Empirical mean of the uniform distribution : 0.50034
 Empirical variance of the uniform distribution : 0.08324
 
@@ -47,7 +47,38 @@ The maximum error between the empirical CDF and the normal CDF is 0.05257 for N 
 
 4.a. Antithetic variables
 Correlation between antithetic variables : -0.49952
+Expected factor of variance reduction : 3.99617
 
 
 4.b. Control variate
 Correlation between control variates : 0.92542
+Expected factor of variance reduction : 6.96406
+
+
+5.a. Digital put option
+Without importance sampling
+With 65536 samples, the value is 0.00010 and is correct within 37.79472%.
+With 131072 samples, the value is 0.00011 and is correct within 25.81851%.
+With 262144 samples, the value is 0.00011 and is correct within 17.95950%.
+With 524288 samples, the value is 0.00016 and is correct within 10.78240%.
+With 1048576 samples, the value is 0.00014 and is correct within 8.08393%.
+
+5.b. With importance sampling
+We have p_1(x) = 1/sqrt(2*pi) * exp(-1/2*x^2), f(x) = exp(-rT) * H(K - S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*x))
+We let p_2(x) = 1/sqrt(2*pi) * exp(-1/2*(x+mu)^2), so that R(x) = exp(-mu*x-1/2*mu^2)
+We want to pick mu s.t. K = S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*mu)
+With importance sampling
+With 1024 samples, the value is 0.00014 and is correct within 6.29225%.
+With 2048 samples, the value is 0.00014 and is correct within 4.39272%.
+With 4096 samples, the value is 0.00014 and is correct within 3.09640%.
+
+
+6.a. Bumping
+
+
+6.b. Pathwise sensitivity method
+For the delta, we have f(S0, Z) = exp(-rT) * max(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) - K, 0)
+so that del(f)/del(S0) = exp(-rT) * exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) > K)
+
+For the vega, we have del(f)/del(sigma) = exp(-rT) * S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) *
+(-sigma*T + sqrt(T)*Z) * I(S0*exp((r-1/2*sigma^2)*T + sigma*Z) > K)
