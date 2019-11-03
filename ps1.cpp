@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/math/distributions/normal.hpp>
 
@@ -350,4 +351,3 @@ void finite_difference_bumping(std::vector<double> bumps, size_t n_sim, const st
     }
     outfile_fd.close();
 }
-

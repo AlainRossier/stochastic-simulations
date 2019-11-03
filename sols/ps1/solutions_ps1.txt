@@ -1,0 +1,53 @@
+1.a. Random variable generation
+CPU time elapsed to generate 1000000 doubles : 132.07200 ms.
+Empirical mean of the uniform distribution : 0.50034
+Empirical variance of the uniform distribution : 0.08324
+
+If we are using floats, for n=10^7, the empirical variance is still quite far awayfrom the theoretical one (order 10^(-2)). But it is faster (1.1s).
+Using double, represented by 64 bits, the absolute error on the variance is of order 10^(-3) at the expense of speed (1.4s).
+
+Empirical mean of the normal distribution : -0.00077
+Empirical variance of the normal distribution : 1.00107
+
+1.b. Cholesky decomposition
+With Cholesky, L = [2,2]((2.00000,0.00000),(0.50000,1.93649))
+Empirical mean of the multivariate normal distribution with Cholesky : [1,2]((-0.00128,-0.00028))
+Empirical covariance of the multivariate normal distribution with Cholesky : [2,2]((3.99861,0.99719),(0.99719,3.99387))
+
+1.c. PCA factorisation
+With PCA, L = [2,2]((1.58114,1.22474),(1.58114,-1.22474))
+Empirical mean of the multivariate normal distribution with PCA : [1,2]((-0.00098,-0.00104))
+Empirical covariance of the multivariate normal distribution with PCA : [2,2]((3.99474,1.00105),(1.00105,3.99967))
+
+
+2.a. Analytical computation
+f_bar = -0.20264
+sigma = 0.38850
+
+2.b. Monte-Carlo simulations
+
+2.c. Sorting and plotting
+The CLT guarantees a convergence in distribution, meaning that the empirical CDF and the normal one converges pointwise everywhere.
+The maximum error between the empirical CDF and the normal CDF is 0.01993 for N = 1000 samples.
+We observed that the latter decays at a rate of 1/sqrt(n), which is guaranteed by the Berry–Esseen theorem.
+
+2.d. Confidence intervals
+
+
+3.a. Analytical computation
+f_bar = 10.45058
+
+3.b. Monte-Carlo simulations
+
+3.c. Sorting and plotting
+The maximum error between the empirical CDF and the normal CDF is 0.05257 for N = 1000 samples.
+
+3.d. Confidence intervals
+
+
+4.a. Antithetic variables
+Correlation between antithetic variables : -0.49952
+
+
+4.b. Control variate
+Correlation between control variates : 0.92542
