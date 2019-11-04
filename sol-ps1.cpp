@@ -94,8 +94,25 @@ void solutions_ps1() {
     out << "Empirical mean of the multivariate normal distribution with PCA : " << mean(corr_multivariate_normal_pca) << endl ;
     out << "Empirical covariance of the multivariate normal distribution with PCA : " << covariance(corr_multivariate_normal_pca) << endl ;
 
-    // 1.d
+    // 1.d. Run simulations
+    out << "\n1.d. Run simulations" << endl;
+    uniform_real_distribution<double> uniform(0.0f, 1.0f);
+    auto next_uniform = std::bind(std::ref(uniform), std::ref(rng));
+    start = clock();
+    bool cont(true);
+    size_t count_samples(0);
+    while (cont) {
+        next_uniform();
+        count_samples++;
+        if (count_samples % 10000000 == 0) {
+            if ((clock() - start) / (double)(CLOCKS_PER_SEC) > 60) {
+                cont = false;
+            }
+        }
+    }
 
+    out << "Number of uniform samples generated in 1 minute : " << count_samples << endl;
+    out << "It seems to be on par with Python's numpy library. I wonder why I can't gain an edge over it." << endl;
 
     // 2.a. Analytical computation
     out << "\n\n2.a. Analytical computation" << endl;
@@ -248,6 +265,8 @@ void solutions_ps1() {
         }
     }
 
+    out << "We see that roughly 1'000'000 samples are needed to have a 10% confidence bound." << endl;
+
 
     // 5.b. With importance sampling
     out << "\n5.b. With importance sampling" << endl;
@@ -277,6 +296,7 @@ void solutions_ps1() {
         }
     }
 
+    out << "We see that less than 1'000 samples are needed to have a 10% confidence bound, an improvement of 3 orders of magnitude." << endl;
 
     // 6.a. Bumping
     out << "\n\n6.a. Bumping" << endl;
@@ -298,7 +318,7 @@ void solutions_ps1() {
     finite_difference_bumping(bumps, 100000, delta_european_call_bump, true_delta,
                               ABS_PATH + "/data/ps_1_6a_bumping_delta_european_call.data", rng);
 
-    finite_difference_bumping(bumps, 1000000, vega_european_call_bump, true_vega,
+    finite_difference_bumping(bumps, 100000, vega_european_call_bump, true_vega,
                               ABS_PATH + "/data/ps_1_6a_bumping_vega_european_call.data", rng);
 
 
