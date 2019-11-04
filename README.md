@@ -5,8 +5,9 @@ Solutions in C++ of the problem sheets of the Stochastic Simulation lecture by P
 
 ### Requirements
 You will need 
-- C++ compiler (I use the GNU GCC Compiler built inside the IDE Code::Blocks),
-- gnuplot to plot the figure using the commands below.
+- C++ compiler with C++14 flag (I use the GNU GCC Compiler built inside the IDE Code::Blocks),
+- the C++ library Boost, for general purpose computations such as matrix multiplication,
+- gnuplot, to plot the figure using the commands below.
 
 ### Execute the program
 The exectuable file is in `./bin/Debug/Problem_sheets`  
