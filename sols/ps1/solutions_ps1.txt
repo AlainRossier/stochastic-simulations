@@ -1,5 +1,5 @@
 1.a. Random variable generation
-CPU time elapsed to generate 1000000 doubles : 126.99900 ms.
+CPU time elapsed to generate 1000000 doubles : 127.81400 ms.
 Empirical mean of the uniform distribution : 0.50034
 Empirical variance of the uniform distribution : 0.08324
 
@@ -74,7 +74,7 @@ With 4096 samples, the value is 0.00014 and is correct within 3.09640%.
 
 
 6.a. Bumping
-
+We are using 100'000 samples to compute the finite differences.
 
 6.b. Pathwise sensitivity method
 For the delta, we have f(S0, Z) = exp(-rT) * max(S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*Z) - K, 0)

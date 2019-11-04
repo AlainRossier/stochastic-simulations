@@ -280,6 +280,7 @@ void solutions_ps1() {
 
     // 6.a. Bumping
     out << "\n\n6.a. Bumping" << endl;
+    out << "We are using 100'000 samples to compute the finite differences." << endl;
     rate = 0.05; sigma = 0.2; maturity = 1.0; initial_value = 100.0; strike = 100.0;
     std::function<double(double, double)> delta_european_call_bump = [&](double x, double bump) -> double {
         return payoff_european_call(quantile(normal_dist, x), rate, sigma, maturity, initial_value*exp(bump), strike) / initial_value;
@@ -297,7 +298,7 @@ void solutions_ps1() {
     finite_difference_bumping(bumps, 100000, delta_european_call_bump, true_delta,
                               ABS_PATH + "/data/ps_1_6a_bumping_delta_european_call.data", rng);
 
-    finite_difference_bumping(bumps, 100000, vega_european_call_bump, true_vega,
+    finite_difference_bumping(bumps, 1000000, vega_european_call_bump, true_vega,
                               ABS_PATH + "/data/ps_1_6a_bumping_vega_european_call.data", rng);
 
 
