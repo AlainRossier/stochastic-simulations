@@ -8,6 +8,7 @@
 using namespace std;
 using namespace boost::numeric::ublas;
 
+string ABS_PATH = "/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/";
 
 double mean(std::vector<double> v)
 {

@@ -16,8 +16,6 @@
 using namespace std;
 using namespace boost::numeric::ublas;
 
-std::string ABS_PATH = "/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/";
-
 
 // Write the solution file
 
@@ -27,12 +25,11 @@ void solutions_ps1() {
     // Initialize the random number generator
     default_random_engine rng;
 
-    // Print up to the 5th most significant digit
-
-
     // Initialize the output file
     std::ofstream out;
     out.open(ABS_PATH + "sols/ps1/solutions_ps1.txt");
+
+    // Print up to the 5th most significant digit
     out.precision(5);
     out.setf(ios::fixed);
     out.setf(ios::showpoint);

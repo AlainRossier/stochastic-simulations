@@ -51,3 +51,14 @@ You can find the solutions in text files under `./sols/`, together with the plot
 - Exercise 6.b.  
 `plot "ps_1_6b_ipa_delta_european_call.data" using 1:2:3:4 with yerrorlines title "Confidence intervals for delta with the IPA method", "ps_1_6b_ipa_delta_european_call.data" using 1:5 title "True delta"`  
 `plot "ps_1_6b_ipa_vega_european_call.data" using 1:2:3:4 with yerrorlines title "Confidence intervals for vega with the IPA method", "ps_1_6b_ipa_vega_european_call.data" using 1:5 title "True vega"`  
+
+
+## Problem sheet 2
+
+### Plotting
+- Exercise 2.a.  
+`plot "ps_2_2a_weak_convergence_sde.data" using 1:2:3 with yerrorlines title "Confidence intervals for weak convergence method of GBM SDE"`  
+- Exercise 2.b.  
+``
+
+

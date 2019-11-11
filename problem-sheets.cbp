@@ -35,6 +35,12 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="ps1.cpp" />
 		<Unit filename="ps1.h" />
+		<Unit filename="ps2.cpp" />
+		<Unit filename="ps2.h" />
+		<Unit filename="sol-ps1.cpp" />
+		<Unit filename="sol-ps1.h" />
+		<Unit filename="sol-ps2.cpp" />
+		<Unit filename="sol-ps2.h" />
 		<Unit filename="utils.cpp" />
 		<Unit filename="utils.h" />
 		<Extensions>

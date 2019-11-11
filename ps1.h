@@ -1,5 +1,5 @@
-#ifndef PROBLEM1
-#define PROBLEM1
+#ifndef PS1
+#define PS1
 
 #include <string>
 #include <random>

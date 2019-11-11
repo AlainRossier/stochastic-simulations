@@ -1,9 +1,11 @@
-#ifndef HELPERS
-#define HELPERS
+#ifndef UTILS
+#define UTILS
 
 #include <vector>
+#include <string>
 #include <boost/numeric/ublas/matrix.hpp>
 
+extern std::string ABS_PATH;
 
 double mean(std::vector<double>);
 double variance(std::vector<double>);
