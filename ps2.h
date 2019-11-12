@@ -12,6 +12,9 @@ void european_call_path(double, double, double, double, double, size_t, size_t,
 void european_call_path_2h(double, double, double, double, double, size_t, size_t,
                            std::string, std::default_random_engine&);
 
+void gbm_strong_error(double, double, double, double, double, size_t, size_t,
+                      std::string, std::default_random_engine&);
+
 
 
 

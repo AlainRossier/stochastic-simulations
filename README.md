@@ -56,9 +56,16 @@ You can find the solutions in text files under `./sols/`, together with the plot
 ## Problem sheet 2
 
 ### Plotting
-- Exercise 2.a.  
-`plot "ps_2_2a_weak_convergence_sde.data" using 1:2:3 with yerrorlines title "Confidence intervals for weak convergence method of GBM SDE"`  
+- Exercise 2.a.
+`set logscale x`  
+`plot "ps_2_2a_weak_convergence_sde.data" using 1:2 with lines title "Weak error", "ps_2_2a_weak_convergence_sde.data" using 1:3 with lines title "MC error"`    
 - Exercise 2.b.  
-``
+`set logscale x`    
+`plot "ps_2_2b_weak_convergence_sde_2h.data" using 1:2 with lines title "Weak error using 2h", "ps_2_2b_weak_convergence_sde_2h.data" using 1:3 with lines title "MC error"`
+- Exercise 2.c.    
+`set logscale x`  
+`set logscale y`  
+`plot "ps_2_2c_strong_convergence_sde_2h.data" using 1:2 with lines title "Exact error", "ps_2_2c_strong_convergence_sde_2h.data" using 1:3 with lines title "MC error for exact loss", "ps_2_2c_strong_convergence_sde_2h.data" using 1:4 with lines title "Relative error with 2h", "ps_2_2c_strong_convergence_sde_2h.data" using 1:5 with lines title "MC error for relative loss"`  
+
 
 

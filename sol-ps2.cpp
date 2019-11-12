@@ -38,6 +38,12 @@ void solutions_ps2() {
     european_call_path_2h(rate, sigma, maturity, initial_value, strike, n_paths, n_levels,
                           ABS_PATH + "data/ps_2_2b_weak_convergence_sde_2h.data", rng);
 
+    // 2.c. Strong convergence of SDE with steps 2h
+    out << "\n2.c. Strong convergence of SDE with steps 2h" << endl;
+    out << "Analysis of the strong convergence of GBM SDE with N = " << n_paths << + " paths and " << n_levels << " levels, with the 2h trick." << endl;
+    gbm_strong_error(rate, sigma, maturity, initial_value, strike, n_paths, n_levels,
+                     ABS_PATH + "data/ps_2_2c_strong_convergence_sde_2h.data", rng);
+
 
 
 
