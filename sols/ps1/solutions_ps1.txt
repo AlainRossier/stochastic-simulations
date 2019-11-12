@@ -18,6 +18,8 @@ Empirical covariance of the multivariate normal distribution with Cholesky : [2,
 With PCA, L = [2,2]((1.58114,1.22474),(1.58114,-1.22474))
 Empirical mean of the multivariate normal distribution with PCA : [1,2]((-0.00098,-0.00104))
 Empirical covariance of the multivariate normal distribution with PCA : [2,2]((3.99474,1.00105),(1.00105,3.99967))
+
+1.d. Run simulations
 Number of uniform samples generated in 1 minute : 580000000
 It seems to be on par with Python's numpy library. I wonder why I can't gain an edge over it.
 
