@@ -7,6 +7,8 @@
 
 extern std::string ABS_PATH;
 
+std::vector<double> operator+(std::vector<double> const&, std::vector<double> const&);
+
 double mean(std::vector<double>);
 double variance(std::vector<double>);
 

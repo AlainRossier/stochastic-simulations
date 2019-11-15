@@ -10,6 +10,24 @@ using namespace boost::numeric::ublas;
 
 string ABS_PATH = "/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/";
 
+
+
+std::vector<double> operator+(std::vector<double> const& v , std::vector<double> const& w) {
+    if (v.size() != w.size()) {
+        cerr << "You're shit." << endl;
+        return std::vector<double>(0);
+
+    } else {
+        size_t n = v.size();
+        std::vector<double> output(n);
+        for (size_t i(0); i < n; ++i) {
+            output[i] = v[i] + w[i];
+        }
+        return output;
+    }
+}
+
+
 double mean(std::vector<double> v)
 {
     double sum = std::accumulate(begin(v), end(v), 0.0);

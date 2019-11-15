@@ -26,7 +26,7 @@ void solutions_ps1() {
     default_random_engine rng;
 
     // Initialize the output file
-    std::ofstream out;
+    ofstream out;
     out.open(ABS_PATH + "sols/ps1/solutions_ps1.txt");
 
     // Print up to the 5th most significant digit

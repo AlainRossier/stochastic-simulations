@@ -15,8 +15,14 @@ void european_call_path_2h(double, double, double, double, double, size_t, size_
 void gbm_strong_error(double, double, double, double, double, size_t, size_t,
                       std::string, std::default_random_engine&);
 
+// Problem 3
 
 
+// Problem 4
+
+void heston_stochastic_vola_strong_error(double, double, double, double, double,
+                                         double, double, double, size_t, size_t,
+                                         std::string, std::default_random_engine&);
 
 
 #endif

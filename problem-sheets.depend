@@ -10,8 +10,9 @@
 	<vector>
 	<boost/numeric/ublas/matrix.hpp>
 
-1573333865 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/main.cpp
+1573667294 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/main.cpp
 	<iostream>
+	<vector>
 	"sol-ps1.h"
 	"sol-ps2.h"
 
@@ -31,14 +32,14 @@
 	<boost/numeric/ublas/matrix.hpp>
 	<boost/math/distributions/normal.hpp>
 
-1573335865 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.cpp
+1573667467 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.cpp
 	<numeric>
 	<functional>
 	<algorithm>
 	"utils.h"
 	<boost/numeric/ublas/matrix.hpp>
 
-1573335848 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.h
+1573666980 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.h
 	<vector>
 	<string>
 	<boost/numeric/ublas/matrix.hpp>
@@ -61,7 +62,7 @@
 
 1573334970 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps1.h
 
-1573334820 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps1.cpp
+1573665392 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps1.cpp
 	<iostream>
 	<random>
 	<functional>
@@ -76,20 +77,21 @@
 
 1573330863 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps2.h
 
-1573338045 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.cpp
+1573648411 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.cpp
 	<iostream>
 	<cmath>
 	"ps1.h"
 	<fstream>
+	<boost/numeric/ublas/matrix.hpp>
 
-1573472073 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps2.cpp
+1573648440 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps2.cpp
 	<iostream>
 	<cmath>
 	<fstream>
 	"utils.h"
 	"ps2.h"
 
-1573472078 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.h
+1573664565 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.h
 	<string>
 	<random>
 

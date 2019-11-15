@@ -1,5 +1,5 @@
 1.a. Random variable generation
-CPU time elapsed to generate 1000000 doubles : 132.27600 ms.
+CPU time elapsed to generate 1000000 doubles : 120.13800 ms.
 Empirical mean of the uniform distribution : 0.50034
 Empirical variance of the uniform distribution : 0.08324
 
@@ -20,7 +20,7 @@ Empirical mean of the multivariate normal distribution with PCA : [1,2]((-0.0009
 Empirical covariance of the multivariate normal distribution with PCA : [2,2]((3.99474,1.00105),(1.00105,3.99967))
 
 1.d. Run simulations
-Number of uniform samples generated in 1 minute : 580000000
+Number of uniform samples generated in 1 minute : 620000000
 It seems to be on par with Python's numpy library. I wonder why I can't gain an edge over it.
 
 
@@ -32,7 +32,7 @@ sigma = 0.38850
 
 2.c. Sorting and plotting
 The CLT guarantees a convergence in distribution, meaning that the empirical CDF and the normal one converges pointwise everywhere.
-The maximum error between the empirical CDF and the normal CDF is 0.01755 for N = 1000 samples.
+The maximum error between the empirical CDF and the normal CDF is 0.03463 for N = 1000 samples.
 We observed that the latter decays at a rate of 1/sqrt(n), which is guaranteed by the Berry–Esseen theorem.
 
 2.d. Confidence intervals
@@ -44,28 +44,28 @@ f_bar = 10.45058
 3.b. Monte-Carlo simulations
 
 3.c. Sorting and plotting
-The maximum error between the empirical CDF and the normal CDF is 0.02738 for N = 1000 samples.
+The maximum error between the empirical CDF and the normal CDF is 0.01636 for N = 1000 samples.
 
 3.d. Confidence intervals
 
 
 4.a. Antithetic variables
-Correlation between antithetic variables : -0.50249
-Expected factor of variance reduction : 4.02004
+Correlation between antithetic variables : -0.50051
+Expected factor of variance reduction : 4.00407
 
 
 4.b. Control variate
-Correlation between control variates : 0.91976
-Expected factor of variance reduction : 6.49153
+Correlation between control variates : 0.93099
+Expected factor of variance reduction : 7.50430
 
 
 5.a. Digital put option
 Without importance sampling
-With 65536 samples, the value is 0.00016 and is correct within 30.14883%.
-With 131072 samples, the value is 0.00014 and is correct within 22.94000%.
-With 262144 samples, the value is 0.00016 and is correct within 14.90587%.
-With 524288 samples, the value is 0.00017 and is correct within 10.25886%.
-With 1048576 samples, the value is 0.00015 and is correct within 7.69169%.
+With 65536 samples, the value is 0.00006 and is correct within 49.99886%.
+With 131072 samples, the value is 0.00011 and is correct within 25.81851%.
+With 262144 samples, the value is 0.00012 and is correct within 17.67662%.
+With 524288 samples, the value is 0.00013 and is correct within 11.78432%.
+With 1048576 samples, the value is 0.00014 and is correct within 8.00582%.
 We see that roughly 1'000'000 samples are needed to have a 10% confidence bound.
 
 5.b. With importance sampling
@@ -73,9 +73,9 @@ We have p_1(x) = 1/sqrt(2*pi) * exp(-1/2*x^2), f(x) = exp(-rT) * H(K - S0*exp((r
 We let p_2(x) = 1/sqrt(2*pi) * exp(-1/2*(x+mu)^2), so that R(x) = exp(-mu*x-1/2*mu^2)
 We want to pick mu s.t. K = S0*exp((r-1/2*sigma^2)*T + sigma*sqrt(T)*mu)
 With importance sampling
-With 1024 samples, the value is 0.00014 and is correct within 6.36691%.
-With 2048 samples, the value is 0.00014 and is correct within 4.45512%.
-With 4096 samples, the value is 0.00014 and is correct within 3.17477%.
+With 1024 samples, the value is 0.00014 and is correct within 6.27532%.
+With 2048 samples, the value is 0.00014 and is correct within 4.47201%.
+With 4096 samples, the value is 0.00015 and is correct within 3.12988%.
 We see that less than 1'000 samples are needed to have a 10% confidence bound, an improvement of 3 orders of magnitude.
 
 

@@ -56,7 +56,7 @@ You can find the solutions in text files under `./sols/`, together with the plot
 ## Problem sheet 2
 
 ### Plotting
-- Exercise 2.a.
+- Exercise 2.a.  
 `set logscale x`  
 `plot "ps_2_2a_weak_convergence_sde.data" using 1:2 with lines title "Weak error", "ps_2_2a_weak_convergence_sde.data" using 1:3 with lines title "MC error"`    
 - Exercise 2.b.  
