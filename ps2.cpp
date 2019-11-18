@@ -167,7 +167,57 @@ void gbm_strong_error(double rate, double sigma, double maturity, double initial
 
 
 // Problem 3
+void ornstein_uhlenbeck_strong_error(double rate, double maturity, double initial_value,
+                                     double theta, double kappa, size_t n_paths, double sigma,
+                                     size_t n_levels, string path, default_random_engine& rng){
 
+    // initialize
+    size_t incr(1);
+    double step(0.0);
+    double sum, sumsq;
+    double price_h, price_2h, vola_h, vola_2h;
+    double norm_0, norm_1, dW1, dW2;
+    double err, mean, sd;
+
+    // Random number generator
+    normal_distribution<double> normal(0.0f, 1.0f);
+    auto next_normal = bind(ref(normal), ref(rng))
+
+    // Saving
+    std::ofstream outfile;
+    outfile.open(path);
+
+    for (size_t p(1); p<= n_levels; p++) {
+        incr *= 2
+        step = maturity / incr
+        sum = 0.0; sumsq = 0.0;
+
+        for (size_t m(0); m < n_paths; m++){
+            price_h = initial_value;
+            price_2h = initial_value;
+
+            for (size_t i(0), i < incr/2, i++){
+                // Draw random variable
+                dW1 = sqrt(step) * next_normal(); dW2 = sqrt(step) * next_normal();
+
+                // Add price moves step h
+                price_h *= (1 + kappa * (theta - price_h) * step + sigma * dW1)
+                price_h *= (1 + kappa * (theta - price_h) * step + sigma * dW2)
+
+                // Add price move step 2h
+                price_2h *= (1 + kappa * (theta - price_h) * (2 * step) + sigma * (dW1 + dW2))
+            }
+
+            err = pow(price_2h - price_h, 2);
+            sum += err; sumsq += pow(err, 2);
+        }
+
+        mean = sum/n_paths;
+        sd = sqrt((sumsq/n_paths - pow(mean, 2)) / (n_paths-1));
+
+        outfile << step << " " << sqrt(mean) << " " << (0.5/sqrt(mean)) * 3*sd << endl;
+    }
+ }
 
 
 // Problem 4

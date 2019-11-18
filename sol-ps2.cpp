@@ -54,7 +54,10 @@ void solutions_ps2() {
 
 
     // 3. Ornstein-Uhlenbeck process
-
+    out << "\n4. Strong convergence of the Ornstein Uhlenbeck process with steps 2h." << endl;
+    out << "Analysis of the strong convergence of OU SDE with N = " << n_paths << + " paths and " << n_levels << " levels, with the 2h trick." << endl;
+    double theta(110), kappa(2), sigma(0.5);
+    ornstein_uhlenbeck_strong_error(rate, maturity, initial_value, theta, kappa, n_paths, sigma, n_levels, "data/ps_3_ohlenstein_uhlenbeck.data", rng);
 
     // 4. Heston stochastic volatility model
     out << "\n4. Strong convergence of the Heston stochastic volatility model with steps 2h." << endl;
