@@ -17,7 +17,9 @@ void gbm_strong_error(double, double, double, double, double, size_t, size_t,
 
 // Problem 3
 
-
+void ornstein_uhlenbeck_strong_error(double, double, double,
+                                     double, double, size_t, double,
+                                     size_t, std::string, std::default_random_engine&);
 // Problem 4
 
 void heston_stochastic_vola_strong_error(double, double, double, double, double,
