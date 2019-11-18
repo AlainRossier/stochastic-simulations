@@ -58,3 +58,28 @@ matrix<double> covariance(matrix<double> m)
     matrix<double> means = mean(m);
     return prod(trans(m), m) / m.size1() - prod(trans(means), means);
 }
+
+
+// Normal cumulative function
+float ncff(float x) {
+  return 0.5f+0.5f*erff(sqrtf(0.5f)*x);
+}
+
+
+// Linear regression routine
+void regression(int N, float *x, float *y, float &a, float &b){
+
+  float sum0=0.0f, sum1=0.0f, sum2=0.0f, sumy0=0.0f, sumy1=0.0f;
+
+  for (int i=0; i<N; i++) {
+    sum0  += 1.0f;
+    sum1  += x[i];
+    sum2  += x[i]*x[i];
+
+    sumy0 += y[i];
+    sumy1 += y[i]*x[i];
+  }
+
+  a = (sum0*sumy1 - sum1*sumy0) / (sum0*sum2 - sum1*sum1);
+  b = (sum2*sumy0 - sum1*sumy1) / (sum0*sum2 - sum1*sum1);
+}

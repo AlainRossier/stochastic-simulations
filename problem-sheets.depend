@@ -10,7 +10,7 @@
 	<vector>
 	<boost/numeric/ublas/matrix.hpp>
 
-1573667294 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/main.cpp
+1573915365 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/main.cpp
 	<iostream>
 	<vector>
 	"sol-ps1.h"
@@ -32,14 +32,14 @@
 	<boost/numeric/ublas/matrix.hpp>
 	<boost/math/distributions/normal.hpp>
 
-1573667467 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.cpp
+1573924955 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.cpp
 	<numeric>
 	<functional>
 	<algorithm>
 	"utils.h"
 	<boost/numeric/ublas/matrix.hpp>
 
-1573666980 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.h
+1573924918 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/utils.h
 	<vector>
 	<string>
 	<boost/numeric/ublas/matrix.hpp>
@@ -77,11 +77,12 @@
 
 1573330863 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps2.h
 
-1573648411 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.cpp
+1573928349 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.cpp
 	<iostream>
 	<cmath>
-	"ps1.h"
 	<fstream>
+	"ps1.h"
+	"utils.h"
 	<boost/numeric/ublas/matrix.hpp>
 
 1573648440 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/sol-ps2.cpp
@@ -94,4 +95,13 @@
 1573664565 /home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/ps2.h
 	<string>
 	<random>
+
+1573928216 source:/home/alain/Documents/phd/lectures/stochastic_simulations/stochastic-simulations/mlmc.cpp
+	<iostream>
+	<cmath>
+	<fstream>
+	<string>
+	<time.h>
+	<random>
+	"utils.h"
 

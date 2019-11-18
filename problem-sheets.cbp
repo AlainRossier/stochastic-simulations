@@ -33,6 +33,8 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="main.cpp" />
+		<Unit filename="mlmc.cpp" />
+		<Unit filename="mlmc.h" />
 		<Unit filename="ps1.cpp" />
 		<Unit filename="ps1.h" />
 		<Unit filename="ps2.cpp" />

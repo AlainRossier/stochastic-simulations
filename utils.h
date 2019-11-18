@@ -15,5 +15,9 @@ double variance(std::vector<double>);
 boost::numeric::ublas::matrix<double> mean(boost::numeric::ublas::matrix<double> m);
 boost::numeric::ublas::matrix<double> covariance(boost::numeric::ublas::matrix<double> m);
 
+float ncff(float);
+
+void regression(int, float *, float *, float &a, float &b);
+
 
 #endif
