@@ -1,0 +1,74 @@
+/*
+
+*/
+
+#include "mlmc_test.cpp"
+#include <random>
+#include <functional>
+
+
+void ps3_l(int, int, double *);
+
+float ncff(float x) {
+    return 0.5f+0.5f*erff(sqrtf(0.5f)*x);
+}
+
+// declare generator and output distributions
+
+std::default_random_engine rng;
+std::normal_distribution<float> normal(0.0f,1.0f);
+std::lognormal_distribution<float> lognormal(0.0f,1.0f);
+
+auto next_normal = std::bind(std::ref(normal), std::ref(rng));
+auto next_lognormal = std::bind(std::ref(lognormal), std::ref(rng));
+
+//
+// main code
+//
+
+int main(int argc, char **argv) {
+    
+    int M  = 2;     // refinement cost factor
+    int N0 = 200;   // initial samples on each level
+    int Lmin = 2;   // minimum refinement level
+    int Lmax = 10;  // maximum refinement level
+    int N = 20000;  // samples for convergence tests
+    int L = 8;      // levels for convergence tests
+
+    float Eps[11];
+    float Eps2[] = {10, 20, 50};
+    memcpy(Eps,Eps2,sizeof(Eps2));
+    
+    char  filename[32];
+    FILE *fp;
+
+    printf("\n ---- Biochemical kinetics ---- \n");
+
+    mlmc_test(ps3_l, M, N, L, N0, Eps, Lmin, Lmax, fp);
+
+    fclose(fp);
+}
+
+
+// Coupling between level l-1 and level l
+void ps3_l(int l, int N, double *sums) {
+
+    // initalization
+    int XG(1), XM(0), XP(0), XD(0);
+
+    // model parameters
+
+
+    // simulate
+
+    for (size_t k(0); k<7; k++) sums[k] = 0.0;
+
+    for (size_t np(0); np<N; np++) {
+	
+    }
+
+    
+
+
+}
+
